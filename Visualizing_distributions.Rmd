@@ -4,12 +4,12 @@ author: "Liz Carey, Meghana Murthy"
 date: "5/14/2019"
 output:  
     html_document: 
-    toc: true
-    toc_float: true
-    theme: paper
-    code_folding: show
-    highlight: textmate
-    df_print: paged
+      toc: true
+      toc_float: true
+      theme: paper
+      code_folding: show
+      highlight: textmate
+      df_print: paged
     
 ---
 
