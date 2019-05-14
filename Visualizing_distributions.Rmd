@@ -2,29 +2,224 @@
 title: "Visualizing Distributions"
 author: "Liz Carey, Meghana Murthy"
 date: "5/14/2019"
-output: html_document
+output:  
+    html_document: 
+    toc: true
+    toc_float: true
+    theme: paper
+    code_folding: show
+    highlight: textmate
+    df_print: paged
+    
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+## Set up  
+
+Before we begin, install and load necessary packages to run this notebook. 
+
+```{r, include = FALSE}
+# install.packages("tidyverse")
+# install.packages("gapminder")
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+```{r, warning = FALSE, message=FALSE} 
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+library(tidyverse) #includes functions to run code in this notebook and
+library(gapminder) #includes dataset we'll be plotting
 ```
 
-## Including Plots
+## What is a histogram? 
 
-You can also embed plots, for example:
+A histogram is a visualization of the distribution of continuous (numerical) data. 
+Histograms are a quick way to show if your data are skewed (right skew: longer right tail or left skew: longer left tail) or are symmetric. 
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+### Questions a histogram answers:  
++ What distribution (center, variation and shape) does the data have?
++ Does the data look symmetric or is it skewed to the left or right?
++ Does the data contain outliers?
+
+### How is a histogram different from a bar chart? 
++ A bar chart compares two variables while a histogram only relates one. 
++ A bar chart plots categorical data while a histogram plots numerical binned data
++ A bar chart can be reordered while a histogram cannot
++ A bar chart uses the length of a bar to display value while a histogram uses the area of the bar
+
+## Histogram shapes  
+There are various shapes that your histogram can appear
+
+### Normal Distribution
+A bell-shaped curve. 
+```{r}
+norm_dist <-as.tibble(rnorm(1000, 0, 1))
+
+ggplot(norm_dist, aes(x = value)) + 
+  geom_histogram()
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+### Left skew
+The data are clustered around a large value.  
+
+### Right skew  
+The data are clustered around a small value 
+
+### Comb distribution
+The distribution alternates between high and low peaks. A comb shape can be caused by rounding off. For example, if you are measuring water height to the nearest 10 cm and your class width for the histogram is 5 cm, this could cause a comb shape.
+
+
+## Plotting a histogram
+
+
+
+#### Print the data
+By printing the data, we get a feel for what we'll be analyzing. 
+From the table, we see there are the life expectancy, population, and GDP per capita of various countries separated by year. 
+
+```{r, warning = FALSE, message=FALSE}
+gapminder
+```
+
+```{r}
+ggplot(gapminder, aes(lifeExp)) + 
+  geom_histogram()
+```
+
+### A basic histogram
+```{r, warning = FALSE}
+ggplot(gapminder, aes(lifeExp)) +
+  geom_histogram()
+```
+
+### Adjusting the bin width  
+
+Adjusting the binwdith of your data can change the interpretation.
+
+```{r}
+ggplot(gapminder, aes(gdpPercap)) +
+  geom_histogram(bins = 30)
+```
+
+
+### Changing the colors of your histogram
+
+```{r, include = FALSE}
+
+#Store laCroix color palette, taken from the LaCroisColoR package
+PassionFruit <- c("#C70E7B", "#FC6882", "#A6E000", "#1BB6AF", "#6C6C9D", "#172869")
+Mango <- c("#FF5300", "#9ED80B", "#43B629", "#1BB6AF", "#8F92A1", "#172869")
+Pure <- c("#AFDFEF", "#54BCD1", "#1BB6AF", "#0099D5", "#007BC3", "#172869")
+Lime <- c("#2CB11B", "#95C65C", "#BDDE9B", "#1BB6AF", "#0076C0", "#172869")
+Lemon <- c("#F7AA14", "#F5D000", "#F7E690", "#1BB6AF", "#088BBE", "#172869")
+Orange <- c("#EF7C12", "#FCA315", "#F4B95A", "#1BB6AF", "#088BBE", "#172869")
+Berry <- c("#B25D91", "#CB87B4", "#EFC7E6", "#1BB6AF", "#088BBE", "#172869")
+CranRaspberry <- c("#D9565C", "#F28A8A", "#EDA9AB", "#1BB6AF", "#088BBE", "#172869")
+Pamplemousse <- c("#EA7580", "#F6A1A5", "#F8CD9C", "#1BB6AF", "#088BBE", "#172869")
+PeachPear <- c("#FF3200", "#E9A17C", "#E9E4A6", "#1BB6AF", "#0076BB", "#172869")
+Coconut <- c("#881C00", "#AF6125", "#F4E3C7", "#1BB6AF", "#0076BB", "#172869")
+Apricot <- c("#D72000", "#EE6100", "#FFAD0A", "#1BB6AF", "#9093A2", "#132157")
+Tangerine <- c("#EF562A", "#EC921D", "#F7B449", "#FFED00", "#1BB6AF", "#9093A2", "#132157")
+KeyLime <- c("#D84D16", "#FFF800", "#8FDA04", "#009F3F", "#132157")
+PommeBaya <- c("#C23A4B", "#FBBB48", "#EFEF46", "#31D64D", "#132157")
+CeriseLimon <- c("#EE4244", "#F8D961", "#B6D944", "#638E6E", "#3C5541", "#132157")
+PinaFraise <- c("#F44B4B", "#F19743", "#F1F1A8", "#92D84F", "#7473A6", "#132157")
+KiwiSandia <- c("#D18F55", "#FF3F38", "#FF8C8D", "#AFDE62", "#3CBC38", "#4F5791", " #132157")
+MelonPomelo <- c("#EE404E", "#F99D53", "#F9E7C2", "#24C852", "#4F5791", "#132157")
+MurePepino <- c("#D64358", "#EAFB88", "#3C8C4D", "#DFCEE0", "#4F5791", "#132157")
+```
+
+```{r, warning = FALSE, message=FALSE}
+#store continents in a list
+continents <- c("Africa", "Americas", "Asia", "Europe", "Oceania")
+
+#create a function that will assign the continent names to a color. The function takes three inputs: the list of variables to be colored (e.g. continent names), the type of laCroix palette, and the start of the index. change the index_start to 0 or 1 to get variations of laCroix palette.
+set_continent_color <- function(continent_names, lacroix_color, index_start) {
+  
+  #create empty vector to store values
+  output <- vector("character", length(continent_names))
+  
+  #loop over the length of the list of continent names, and assign a color to each continent
+  for (i in seq_along(continent_names)) {
+    output[[i]] <- lacroix_color[[index_start + i]]
+  }
+  output 
+  
+}
+
+```
+
+#### Plot the histogram.  
+
+Set custom colors using the `set_continent_color` function in the `scale_fill_manual` function.
+
+<div class = "row">
+  
+<div class = "col-md-6">
+```{r, warning = FALSE, message=FALSE, fig.align="center"}
+
+ggplot(gapminder, aes(lifeExp, fill = continent)) +
+  geom_histogram() + 
+  scale_fill_manual(values = set_continent_color(continents, PeachPear, 1))
+```
+</div>
+
+<div class = "col-md-6">
+```{r, warning = FALSE, message=FALSE, fig.align="center"}
+
+ggplot(gapminder, aes(lifeExp, fill = continent)) +
+  geom_histogram() + 
+  scale_fill_manual(values = set_continent_color(continents, Lemon, 1))
+```  
+</div>
+
+</div>
+  
+## Density Plots  
+A density plot is similar to a histogram, but instead of 
+
+```{r, warning = FALSE}
+ggplot(gapminder, aes(lifeExp, stat(density), colour = continent)) +
+  geom_freqpoly()
+```
+```{r, warning=FALSE}
+# Build dataset with different distributions
+data <- data.frame(
+  type = c( rep("Edge Peak", 1000), 
+            rep("Comb", 1000), 
+            rep("Normal", 1000), 
+            rep("Uniform", 1000), 
+            rep("Bimodal", 1000), 
+            rep("Skewed", 1000) ),
+  value = c( rnorm(900), rep(3, 100), 
+             rnorm(360, sd=0.5), rep(c(-1,-0.75,-0.5,-0.25,0,0.25,0.5,0.75), 80), 
+             rnorm(1000), runif(1000), 
+             rnorm(500, mean=-2), 
+             rnorm(500, mean=2), abs(log(rnorm(1000))) )
+)
+
+# Represent it
+data %>%
+  ggplot( aes(x=value)) +
+    geom_density(fill="#69b3a2", color="#e9ecef", alpha=0.9, adjust = 0.5) +
+    facet_wrap(~type, scale="free") +
+    theme(
+      panel.spacing = unit(0.1, "lines"),
+      axis.title.x=element_blank(),
+      axis.text.x=element_blank(),
+      axis.ticks.x=element_blank()
+    )
+```
+
+## Common pitfalls  
+
+
+*** 
+
+## Resources
+
+Read more about different visualization types and how to build them from the following resources:  
+
++  [Data to Viz](https://www.data-to-viz.com/)  
+    *From Data to Viz leads you to the most appropriate graph for your data. It links to the code to build it and lists common caveats you should avoid.*
+
