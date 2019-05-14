@@ -1,5 +1,10 @@
 ---
 title: "Visualizing Distributions"
+knit: (function(input_file, encoding) {
+  out_dir <- 'docs';
+  rmarkdown::render(input_file,
+ encoding=encoding,
+ output_file=file.path(dirname(input_file), out_dir, 'index.html'))})
 author: "Liz Carey, Meghana Murthy"
 date: "5/14/2019"
 output:  
