@@ -3,7 +3,7 @@ title: "Visualizing Distributions"
 author: "Liz Carey, Meghana Murthy"
 date: "5/14/2019"
 output:  
-    github_document: 
+    html_document: 
       toc: true
       toc_float: true
       theme: paper
