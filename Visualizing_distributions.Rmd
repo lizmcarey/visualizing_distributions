@@ -18,7 +18,7 @@ output:
     
 ---
 
-## Set up  
+### Set up  
 
 Before we begin, install and load necessary packages to run this notebook. 
 
@@ -86,9 +86,12 @@ right_skew <- as.tibble(rnbinom(1000, mu = 10, size = 1))
   geom_histogram()
 ```
 
+### Bimodal distribution  
+
+The distribution shows two peaks of data. This might occur because the data set contains two distinct groups. 
 
 ### Comb distribution
-The distribution alternates between high and low peaks. A comb shape can be caused by rounding off. For example, if you are measuring water height to the nearest 10 cm and your class width for the histogram is 5 cm, this could cause a comb shape.
+The distribution alternates between high and low peaks. A comb shape can be caused by rounding off. Common examples of rounding that create comb distributions include: rounding temperatures, height, age to the nearest whole number. 
 
 
 ## Plotting a histogram
