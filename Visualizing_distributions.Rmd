@@ -36,13 +36,11 @@ library(gapminder) #includes dataset we'll be plotting
 
 ## What is a histogram? 
 
-A histogram is a visualization of the distribution of continuous (numerical) data. 
-Histograms are a quick way to show if your data are skewed (right skew: longer right tail or left skew: longer left tail) or are symmetric. 
+A histogram is a visualization of the distribution of numerical data. It's created by "binning" or bucketing the numerical values into intervals. 
 
-### Questions a histogram answers:  
-+ What distribution (center, variation and shape) does the data have?
-+ Does the data look symmetric or is it skewed to the left or right?
-+ Does the data contain outliers?
+### When to use a histogram:   
++ Check the distribution (shape) of your data 
++ Check the data for outliers
 
 ### How is a histogram different from a bar chart? 
 + A bar chart compares two variables while a histogram only relates one. 
@@ -54,8 +52,9 @@ Histograms are a quick way to show if your data are skewed (right skew: longer r
 There are various shapes that your histogram can appear
 
 ### Normal Distribution
-A bell-shaped curve. 
-```{r}
+A bell-shaped curve.  
+
+```{r, warning = FALSE, message=FALSE, echo = FALSE, fig.align="center"}
 norm_dist <-as.tibble(rnorm(1000, 0, 1))
 
 ggplot(norm_dist, aes(x = value)) + 
@@ -67,8 +66,26 @@ ggplot(norm_dist, aes(x = value)) +
 ### Left skew
 The data are clustered around a large value.  
 
+```{r, warning = FALSE, message=FALSE, echo = FALSE, fig.align="center"}
+left_skew <- as.tibble(rnorm(1000, mean=2, abs(log(rnorm(1000) ))))
+
+  ggplot(left_skew, aes(x = value)) + 
+  geom_histogram()
+
+
+```
+
+
 ### Right skew  
 The data are clustered around a small value 
+
+```{r}
+right_skew <- as.tibble(rnbinom(1000, mu = 10, size = 1))
+  
+  ggplot(right_skew, aes(x = value)) + 
+  geom_histogram()
+```
+
 
 ### Comb distribution
 The distribution alternates between high and low peaks. A comb shape can be caused by rounding off. For example, if you are measuring water height to the nearest 10 cm and your class width for the histogram is 5 cm, this could cause a comb shape.
@@ -102,8 +119,8 @@ ggplot(gapminder, aes(lifeExp)) +
 Adjusting the binwdith of your data can change the interpretation.
 
 ```{r}
-ggplot(gapminder, aes(gdpPercap)) +
-  geom_histogram(bins = 30)
+ggplot(gapminder, aes(lifeExp)) +
+  geom_histogram(bins = 200)
 ```
 
 
@@ -180,6 +197,17 @@ ggplot(gapminder, aes(lifeExp, fill = continent)) +
 
 </div>
   
+#### Separate plots  
+
+```{r}
+ggplot(gapminder, aes(lifeExp, fill = continent)) +
+  geom_histogram() + 
+  scale_fill_manual(values = set_continent_color(continents, Pamplemousse, 1)) +
+  facet_wrap(~continent)
+```
+
+
+
 ## Density Plots  
 A density plot is similar to a histogram, but instead of 
 
