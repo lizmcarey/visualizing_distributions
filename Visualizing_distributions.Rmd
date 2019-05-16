@@ -199,6 +199,22 @@ ggplot(gapminder, aes(lifeExp, fill = continent)) +
 </div>
 
 </div>
+
+You can also manually hard code each of the variables. 
+
+
+```{r, warning = FALSE, message=FALSE, fig.align="center"}
+
+ggplot(gapminder, aes(lifeExp, fill = continent)) +
+  geom_histogram() + 
+  scale_fill_manual(values = c("Africa" = "#EA7580", 
+                               "Americas" = "#F6A1A5", 
+                               "Asia" = "#F8CD9C", 
+                               "Europe"= "#1BB6AF", 
+                               "Oceania" = "#088BBE"))
+
+```
+
   
 #### Separate plots  
 
