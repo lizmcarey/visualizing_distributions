@@ -64,31 +64,38 @@ ggplot(norm_dist, aes(x = value)) +
 
 
 ### Left skew
-The data are clustered around a large value.  
+The data are clustered around a large value.  Also referred as negative skewed. 
 
 ```{r, warning = FALSE, message=FALSE, echo = FALSE, fig.align="center"}
-left_skew <- as.tibble(rnorm(1000, mean=2, abs(log(rnorm(1000) ))))
-
-  ggplot(left_skew, aes(x = value)) + 
+left_skew <- as.tibble(log(rnorm(1000)))
+ggplot(left_skew, aes(x = value)) + 
   geom_histogram()
-
 
 ```
 
 
 ### Right skew  
-The data are clustered around a small value 
+The data are clustered around a small value.  
 
-```{r}
+```{r, warning = FALSE, message=FALSE, echo = FALSE, fig.align="center"}
 right_skew <- as.tibble(rnbinom(1000, mu = 10, size = 1))
   
-  ggplot(right_skew, aes(x = value)) + 
+ggplot(right_skew, aes(x = value)) + 
   geom_histogram()
 ```
 
 ### Bimodal distribution  
 
-The distribution shows two peaks of data. This might occur because the data set contains two distinct groups. 
+The distribution shows two peaks of data. This might occur because the data set contains two distinct groups. Consider breaking your dataset into differnt groups to separate the peaks.   
+
+```{r, warning = FALSE, message=FALSE, echo = FALSE, fig.align="center"}
+bimodal_dist <- as.tibble(c(rnorm(1500, mean=-1.5), rnorm(1500, mean=1.5))) 
+
+ggplot(bimodal_dist, aes(x = value)) + 
+  geom_histogram()
+
+```
+
 
 ### Comb distribution
 The distribution alternates between high and low peaks. A comb shape can be caused by rounding off. Common examples of rounding that create comb distributions include: rounding temperatures, height, age to the nearest whole number. 
@@ -200,7 +207,7 @@ ggplot(gapminder, aes(lifeExp, fill = continent)) +
 
 </div>
 
-You can also manually hard code each of the variables. 
+You can also manually hard code each of the variables in the sca. 
 
 
 ```{r, warning = FALSE, message=FALSE, fig.align="center"}
@@ -245,9 +252,10 @@ data <- data.frame(
             rep("Skewed", 1000) ),
   value = c( rnorm(900), rep(3, 100), 
              rnorm(360, sd=0.5), rep(c(-1,-0.75,-0.5,-0.25,0,0.25,0.5,0.75), 80), 
-             rnorm(1000), runif(1000), 
-             rnorm(500, mean=-2), 
-             rnorm(500, mean=2), abs(log(rnorm(1000))) )
+             rnorm(1000), 
+             runif(1000), 
+             rnorm(500, mean=-2), rnorm(500, mean=2), 
+             abs(log(rnorm(1000))) )
 )
 
 # Represent it
