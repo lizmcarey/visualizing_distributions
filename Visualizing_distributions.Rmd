@@ -39,7 +39,7 @@ library(gapminder) #includes dataset we'll be plotting
 A histogram is a visualization of the distribution of numerical data. It's created by "binning" or bucketing the numerical values into intervals. 
 
 ### When to use a histogram:   
-+ Check the distribution (shape) of your data 
++ Check the distribution (shape) of your data and for skewness (the tendency of observations to fall more on the low end or the high end of the x-axis)
 + Check the data for outliers
 
 ### How is a histogram different from a bar chart? 
@@ -52,7 +52,7 @@ A histogram is a visualization of the distribution of numerical data. It's creat
 There are various shapes that your histogram can appear
 
 ### Normal Distribution
-A bell-shaped curve.  
+A bell-shaped curve. Most of the data are clustered around the center: the mode, median and mean are in the center of the curve
 
 ```{r, warning = FALSE, message=FALSE, echo = FALSE, fig.align="center"}
 norm_dist <-as.tibble(rnorm(1000, 0, 1))
@@ -63,7 +63,7 @@ ggplot(norm_dist, aes(x = value)) +
 ```
 
 
-### Left skew
+### Left skew 
 The data are clustered around a large value.  Also referred as negative skewed. 
 
 ```{r, warning = FALSE, message=FALSE, echo = FALSE, fig.align="center"}
@@ -86,7 +86,7 @@ ggplot(right_skew, aes(x = value)) +
 
 ### Bimodal distribution  
 
-The distribution shows two peaks of data. This might occur because the data set contains two distinct groups. Consider breaking your dataset into differnt groups to separate the peaks.   
+The distribution shows two peaks of data: there are two modes (two values that occur more frequently than any other) for the data item (variable). This might occur because the data set contains two distinct groups. Consider breaking your dataset into differnt groups to separate the peaks.   
 
 ```{r, warning = FALSE, message=FALSE, echo = FALSE, fig.align="center"}
 bimodal_dist <- as.tibble(c(rnorm(1500, mean=-1.5), rnorm(1500, mean=1.5))) 
@@ -112,17 +112,54 @@ From the table, we see there are the life expectancy, population, and GDP per ca
 ```{r, warning = FALSE, message=FALSE}
 gapminder
 ```
+#### What's the most common life expectancy?  
+After getting a brief overview of our dataset, now want to answer the question: What's the most common life expectancy? 
 
 ```{r}
 ggplot(gapminder, aes(lifeExp)) + 
   geom_histogram()
 ```
 
-### A basic histogram
-```{r, warning = FALSE}
-ggplot(gapminder, aes(lifeExp)) +
-  geom_histogram()
+Let's plot the histogram with measures of central tendency: median and mean. 
+
+```{r}
+#create a seperate data tabe containing the 
+measures_of_ct <- gapminder %>% summarise(mean = mean(lifeExp), 
+                                          median = median(lifeExp))
+
+
+ggplot(gapminder, aes(lifeExp)) + 
+  geom_histogram() + 
+  geom_vline(data = measures_of_ct, aes(xintercept = mean, color = mean), linetype = "dashed")
+
+?geom_vline
 ```
+
+```{r}
+ggplot(gapminder, aes(lifeExp)) + 
+  geom_histogram() + 
+  geom_vline(aes(xintercept = median(gapminder$lifeExp), 
+                 colour = "red"),  
+             linetype = "dashed", 
+             show.legend = TRUE) + 
+  geom_vline(aes(xintercept = mean(gapminder$lifeExp), 
+                 colour = "blue"),  
+              linetype = "dashed", 
+              show.legend = TRUE) + 
+  guides(color=guide_legend(title="Measure of Central Tendency"))
+
+  
+```
+```{r}
+ggplot(gapminder, aes(lifeExp)) + 
+  geom_histogram() + 
+  geom_vline(aes(xintercept = median(gapminder$lifeExp), 
+                 colour = "red"),  
+             linetype = "dashed", 
+             show.legend = TRUE) +
+  guides(color=guide_legend(title="Measure of Central Tendency"))
+```
+
 
 ### Adjusting the bin width  
 
