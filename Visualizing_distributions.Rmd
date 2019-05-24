@@ -219,7 +219,7 @@ ggplot(gapminder, aes(lifeExp, fill = continent)) +
   
 Now we can see that Africa and Europe have two very distinct means of life expectancy.   
 
-```{r}
+```{r, message=FALSE}
 ggplot(gapminder, aes(lifeExp)) + 
   geom_histogram() + 
   geom_vline(data = measures_of_ct_by_country, 
