@@ -100,6 +100,16 @@ ggplot(bimodal_dist, aes(x = value)) +
 ### Comb distribution
 The distribution alternates between high and low peaks. A comb shape can be caused by rounding off. Common examples of rounding that create comb distributions include: rounding temperatures, height, age to the nearest whole number. 
 
+### Uniform distribution
+```{r, warning = FALSE, message=FALSE, echo = FALSE, fig.align="center"}
+uniform_dist <- as.tibble(runif(3000, min = 0, max = 500)) 
+
+ggplot(uniform_dist, aes(x = value)) + 
+  geom_histogram()
+
+```
+
+
 
 ## Plotting a histogram
 
@@ -115,7 +125,7 @@ gapminder
 ```
 
 #### What's the most common life expectancy?  
-After getting a brief overview of our dataset, now want to answer the question: What's the most common life expectancy?  
+After getting a brief overview of our dataset, now we want to know, what's the most common life expectancy?  
 
 To answer this question, let's print the distribution of life expectancies in the data set. 
 
@@ -134,23 +144,27 @@ measures_of_ct <- gapminder %>% summarise(mean = mean(lifeExp),
 
 ggplot(gapminder, aes(lifeExp)) + 
   geom_histogram() + 
+  # add a vertical line of the mean
   geom_vline(data = measures_of_ct, 
              aes(xintercept = mean, color ="mean"),
              show.legend = TRUE,
              linetype = "dashed") + 
+  # add a vertical line of the median
   geom_vline(data = measures_of_ct,
              aes(xintercept = median, color = "median"),
              linetype = "dashed", 
              show.legend = TRUE) +
   scale_color_manual(
+        #Title the legend
         name = "Measures of Central Tendency", 
+        #Assign colors to the mean and median lines 
         values = c(median = "blue", mean = "red"))
 
 
 ```  
 
 From this plot, we can see the life expectancies center around 60 years of age.  
-But, we also notice the shape of this histogram is bimodal. So, this tells us that we're likely looking at two different groups. 
+But, we also notice the shape of this histogram is bimodal. So, this tells us that we're likely looking at two different groups (or more). 
 
 #### Separate plots  
 Since we suspect we're looking at multiple groups from the bimodal distribution, let's separate the histrograms by one of the variables in our data set, continent.
@@ -199,47 +213,56 @@ set_continent_color <- function(continent_names, lacroix_color, index_start) {
 
 ```{r, warning = FALSE, message=FALSE, fig.align="center"}
 #create a seperate data tabe calculating the mean and median of the data set
-measures_of_ct_by_country <- gapminder %>% 
+measures_of_ct_by_continent <- gapminder %>% 
   group_by(continent) %>% 
   summarize(mean = mean(lifeExp), 
             median = median(lifeExp))
 
-
+#plot the distribution of life expectancies separated by continent
 ggplot(gapminder, aes(lifeExp, fill = continent)) +
   geom_histogram() + 
-  geom_vline(data = measures_of_ct_by_country, 
+  geom_vline(data = measures_of_ct_by_continent, 
              aes(xintercept = mean, color = "mean"), 
              linetype = "dashed") +
-  geom_vline(data = measures_of_ct_by_country, 
+  geom_vline(data = measures_of_ct_by_continent, 
              aes(xintercept = median, color = "median"), 
              linetype = "dashed") +
   scale_fill_manual(values = set_continent_color(continents, Pamplemousse, 1)) +
   facet_wrap(~continent)
 ```
   
-Now we can see that Africa and Europe have two very distinct means of life expectancy.   
-
-```{r, message=FALSE}
-ggplot(gapminder, aes(lifeExp)) + 
-  geom_histogram() + 
-  geom_vline(data = measures_of_ct_by_country, 
-             aes(xintercept = mean, color ="continent"), 
-             show.legend = TRUE,
-             linetype = "dashed")
-  
-
-```
+Now we can see that Africa and Europe have two very distinct averages of life expectancy and were likely driving the bimodal distribution. 
 
 
 ### Adjusting the bin width  
 
-Adjusting the binwdith of your data can change the interpretation.
+Adjusting the binwdith of your data can sometimes change the interpretation of your histogram. Here we look at the difference between the life expectancies in Africa with 10 vs. 100 bins
+
+<div class = "row">
+  
+<div class = "col-md-6">
+```{r, warning = FALSE, message=FALSE, fig.align="center"}
+
+gapminder %>% 
+  filter(continent == "Africa") %>% 
+  ggplot(., aes(lifeExp)) +
+  geom_histogram(bins = 10)
+```
+</div>
+
+<div class = "col-md-6">
 
 ```{r}
-gapminder %>% filter(continent == "Africa") %>% 
-ggplot(., aes(lifeExp)) +
+gapminder %>% 
+  filter(continent == "Africa") %>% 
+  ggplot(., aes(lifeExp)) +
   geom_histogram(bins = 100)
 ```
+
+</div>
+
+</div>
+
 
 
 ### Changing the colors of your histogram
@@ -313,12 +336,23 @@ ggplot(gapminder, aes(lifeExp, fill = continent)) +
 
 
 ## Density Plots  
-A density plot is similar to a histogram, but instead of 
+A density plot is a smoothed version of the histogram.  
+
+### Plot life expectancies  
+
+The below is code to produce a density plot.  Notice the y-axis is labelled "density", not "count" like the histogram plots. 
 
 ```{r, warning = FALSE}
 ggplot(gapminder, 
-       aes(lifeExp, stat(density), colour = continent)) +
-  geom_freqpoly()
+       aes(lifeExp, colour = continent)) +
+       geom_density()
+```
+  
+### Customizing your density plot  
+
+
+```{r}
+
 ```
 
 
