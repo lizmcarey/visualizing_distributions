@@ -107,74 +107,55 @@ The distribution alternates between high and low peaks. A comb shape can be caus
 
 #### Print the data
 By printing the data, we get a feel for what we'll be analyzing. 
-From the table, we see there are the life expectancy, population, and GDP per capita of various countries separated by year. 
+From the table, we see there are the life expectancy, population, and GDP per capita of various countries separated by year.  
+
 
 ```{r, warning = FALSE, message=FALSE}
 gapminder
 ```
-#### What's the most common life expectancy?  
-After getting a brief overview of our dataset, now want to answer the question: What's the most common life expectancy? 
 
-```{r}
+#### What's the most common life expectancy?  
+After getting a brief overview of our dataset, now want to answer the question: What's the most common life expectancy?  
+
+To answer this question, let's print the distribution of life expectancies in the data set. 
+
+```{r, warning = FALSE, message=FALSE}
 ggplot(gapminder, aes(lifeExp)) + 
   geom_histogram()
 ```
 
-Let's plot the histogram with measures of central tendency: median and mean. 
+Now, let's plot the histogram with measures of central tendency: median and mean. 
 
-```{r}
-#create a seperate data tabe containing the 
+```{r,warning = FALSE, message=FALSE}
+#create a seperate data tabe calculating the mean and median of the data set
 measures_of_ct <- gapminder %>% summarise(mean = mean(lifeExp), 
                                           median = median(lifeExp))
 
 
 ggplot(gapminder, aes(lifeExp)) + 
   geom_histogram() + 
-  geom_vline(data = measures_of_ct, aes(xintercept = mean, color = mean), linetype = "dashed")
-
-?geom_vline
-```
-
-```{r}
-ggplot(gapminder, aes(lifeExp)) + 
-  geom_histogram() + 
-  geom_vline(aes(xintercept = median(gapminder$lifeExp), 
-                 colour = "red"),  
-             linetype = "dashed", 
-             show.legend = TRUE) + 
-  geom_vline(aes(xintercept = mean(gapminder$lifeExp), 
-                 colour = "blue"),  
-              linetype = "dashed", 
-              show.legend = TRUE) + 
-  guides(color=guide_legend(title="Measure of Central Tendency"))
-
-  
-```
-```{r}
-ggplot(gapminder, aes(lifeExp)) + 
-  geom_histogram() + 
-  geom_vline(aes(xintercept = median(gapminder$lifeExp), 
-                 colour = "red"),  
+  geom_vline(data = measures_of_ct, 
+             aes(xintercept = mean, color ="mean"),
+             show.legend = TRUE,
+             linetype = "dashed") + 
+  geom_vline(data = measures_of_ct,
+             aes(xintercept = median, color = "median"),
              linetype = "dashed", 
              show.legend = TRUE) +
-  guides(color=guide_legend(title="Measure of Central Tendency"))
-```
+  scale_color_manual(
+        name = "Measures of Central Tendency", 
+        values = c(median = "blue", mean = "red"))
 
 
-### Adjusting the bin width  
+```  
 
-Adjusting the binwdith of your data can change the interpretation.
+From this plot, we can see the life expectancies center around 60 years of age.  
+But, we also notice the shape of this histogram is bimodal. So, this tells us that we're likely looking at two different groups. 
 
-```{r}
-ggplot(gapminder, aes(lifeExp)) +
-  geom_histogram(bins = 200)
-```
+#### Separate plots  
+Since we suspect we're looking at multiple groups from the bimodal distribution, let's separate the histrograms by one of the variables in our data set, continent.
 
-
-### Changing the colors of your histogram
-
-```{r, include = FALSE}
-
+```{r, warning = FALSE, message=FALSE, include = FALSE}
 #Store laCroix color palette, taken from the LaCroisColoR package
 PassionFruit <- c("#C70E7B", "#FC6882", "#A6E000", "#1BB6AF", "#6C6C9D", "#172869")
 Mango <- c("#FF5300", "#9ED80B", "#43B629", "#1BB6AF", "#8F92A1", "#172869")
@@ -196,7 +177,92 @@ PinaFraise <- c("#F44B4B", "#F19743", "#F1F1A8", "#92D84F", "#7473A6", "#132157"
 KiwiSandia <- c("#D18F55", "#FF3F38", "#FF8C8D", "#AFDE62", "#3CBC38", "#4F5791", " #132157")
 MelonPomelo <- c("#EE404E", "#F99D53", "#F9E7C2", "#24C852", "#4F5791", "#132157")
 MurePepino <- c("#D64358", "#EAFB88", "#3C8C4D", "#DFCEE0", "#4F5791", "#132157")
+
+#store continents in a list
+continents <- c("Africa", "Americas", "Asia", "Europe", "Oceania")
+
+#create a function that will assign the continent names to a color. The function takes three inputs: the list of variables to be colored (e.g. continent names), the type of laCroix palette, and the start of the index. change the index_start to 0 or 1 to get variations of laCroix palette.
+set_continent_color <- function(continent_names, lacroix_color, index_start) {
+  
+  #create empty vector to store values
+  output <- vector("character", length(continent_names))
+  
+  #loop over the length of the list of continent names, and assign a color to each continent
+  for (i in seq_along(continent_names)) {
+    output[[i]] <- lacroix_color[[index_start + i]]
+  }
+  output 
+  
+}
+
 ```
+
+```{r, warning = FALSE, message=FALSE, fig.align="center"}
+#create a seperate data tabe calculating the mean and median of the data set
+measures_of_ct_by_country <- gapminder %>% 
+  group_by(continent) %>% 
+  summarize(mean = mean(lifeExp), 
+            median = median(lifeExp))
+
+
+ggplot(gapminder, aes(lifeExp, fill = continent)) +
+  geom_histogram() + 
+  geom_vline(data = measures_of_ct_by_country, 
+             aes(xintercept = mean, color = "mean"), 
+             linetype = "dashed") +
+  geom_vline(data = measures_of_ct_by_country, 
+             aes(xintercept = median, color = "median"), 
+             linetype = "dashed") +
+  scale_fill_manual(values = set_continent_color(continents, Pamplemousse, 1)) +
+  facet_wrap(~continent)
+```
+  
+Now we can see that Africa and Europe have two very distinct means of life expectancy.   
+
+```{r}
+ggplot(gapminder, aes(lifeExp)) + 
+  geom_histogram() + 
+  geom_vline(data = measures_of_ct_by_country, 
+             aes(xintercept = mean, color ="continent"), 
+             show.legend = TRUE,
+             linetype = "dashed")
+  
+
+```
+
+
+### Adjusting the bin width  
+
+Adjusting the binwdith of your data can change the interpretation.
+
+```{r}
+gapminder %>% filter(continent == "Africa") %>% 
+ggplot(., aes(lifeExp)) +
+  geom_histogram(bins = 100)
+```
+
+
+### Changing the colors of your histogram
+
+You can manually hard code each of the variables to the colors you want.  
+
+
+```{r, warning = FALSE, message=FALSE, fig.align="center"}
+
+ggplot(gapminder, aes(lifeExp, fill = continent)) +
+  geom_histogram() + 
+  scale_fill_manual(values = c("Africa" = "#EA7580", 
+                               "Americas" = "#F6A1A5", 
+                               "Asia" = "#F8CD9C", 
+                               "Europe"= "#1BB6AF", 
+                               "Oceania" = "#088BBE"))
+
+```
+  
+Alternatively, if there is a color palette you want to use, you can create a function to populate colors for your plot.  
+
+Below is an example.
+
 
 ```{r, warning = FALSE, message=FALSE}
 #store continents in a list
@@ -244,40 +310,18 @@ ggplot(gapminder, aes(lifeExp, fill = continent)) +
 
 </div>
 
-You can also manually hard code each of the variables in the sca. 
-
-
-```{r, warning = FALSE, message=FALSE, fig.align="center"}
-
-ggplot(gapminder, aes(lifeExp, fill = continent)) +
-  geom_histogram() + 
-  scale_fill_manual(values = c("Africa" = "#EA7580", 
-                               "Americas" = "#F6A1A5", 
-                               "Asia" = "#F8CD9C", 
-                               "Europe"= "#1BB6AF", 
-                               "Oceania" = "#088BBE"))
-
-```
-
-  
-#### Separate plots  
-
-```{r}
-ggplot(gapminder, aes(lifeExp, fill = continent)) +
-  geom_histogram() + 
-  scale_fill_manual(values = set_continent_color(continents, Pamplemousse, 1)) +
-  facet_wrap(~continent)
-```
-
 
 
 ## Density Plots  
 A density plot is similar to a histogram, but instead of 
 
 ```{r, warning = FALSE}
-ggplot(gapminder, aes(lifeExp, stat(density), colour = continent)) +
+ggplot(gapminder, 
+       aes(lifeExp, stat(density), colour = continent)) +
   geom_freqpoly()
 ```
+
+
 ```{r, warning=FALSE}
 # Build dataset with different distributions
 data <- data.frame(
