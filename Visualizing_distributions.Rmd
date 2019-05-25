@@ -443,9 +443,18 @@ ggplot(gapminder,
 +  **Minimize clutter and overlap**  
    
   
+***  
 
+## Practial implications for Survey Analysis  
+So, how can knowing all this code help you?  
+
+Visualizing your data set should be one of the first steps you complete when conducting exploratory analysis. 
 
 *** 
+
+## But I hate R...  
+
+Ok, we heard you. There's a ramp up to R. If you're still uncomfortable, you can view histogram examples in google sheets [here](https://docs.google.com/spreadsheets/d/1KC1Cx1nHfNrVRSom1QXc42q8S_VSo9KmJA9nrZx3Ils/edit?usp=sharing) and view their walkthrough on the Google support page [here](https://support.google.com/docs/answer/9146867?hl=en)
 
 ## Resources
 
