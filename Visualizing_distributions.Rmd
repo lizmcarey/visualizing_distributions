@@ -47,16 +47,19 @@ A histogram is a visualization of the distribution of numerical data. It's creat
 + A bar chart compares two variables while **a histogram only relates one.** 
 + A bar chart plots categorical data while **a histogram plots numerical binned data**
 + A bar chart can be reordered while **a histogram cannot be reordered**
-+ A bar chart uses the length of a bar to display value while **a histogram uses the area of the bar**
++ A bar chart uses the length of a bar to display value while **a histogram uses the area of the bar**  
++ The width of the bars is the same in a bar chart whereas **the width need not be the same in a histogram**  
++ Visually, in a bar chart, there are gaps between the bars, whereas **in a histogram there are no gaps between the bars**  
 
 ## Histogram shapes  
-There are various shapes that your histogram can appear
+There are different shapes that your histogram can take. Each shape says something about your data set.   
 
 ### Normal Distribution
-A bell-shaped curve. Most of the data are clustered around the center: the median and mean are in the center of the curve. The distribution is symmetric meaning about half of the data is to the left of the mean, while the other half is to the right of the mean. The mean and median are approximately the same
+A normal distribution takes the shape of a bell-shaped curve. Most of the data are clustered around the center so that the median and mean will be in the center of the curve and are approximately the same. The distribution is symmetric meaning that about half of the data is to the left of the mean, while the other half is to the right of the mean.  
 
 ```{r, warning = FALSE, message=FALSE, echo = FALSE, fig.align="center"}
-norm_dist <-as.tibble(rnorm(1000, 0, 1))
+set.seed(150)
+norm_dist <-as.tibble(rnorm(1000, 0, .2))
 
 norm_dist_measures_of_ct <- norm_dist %>% 
                             summarize(mean = mean(value, na.rm = TRUE), 
@@ -81,9 +84,10 @@ ggplot(norm_dist, aes(x = value)) +
 
 
 ### Left skew 
-The data are clustered around a large value and mostly fall to the right of the mean (including the median).  It's also referred to as negative skewed. 
+A left skewed shape occurs when data are clustered around a large value and mostly fall to the right of the mean (and typically the median, too).  Left skewed data is also often referred to as negative skewed with a long left tail. 
 
 ```{r, warning = FALSE, message=FALSE, echo = FALSE, fig.align="center"}
+set.seed(74)
 left_skew <- as.tibble(log(rnorm(1000)))
 
 left_skew_measures_of_ct <- left_skew %>% 
@@ -110,9 +114,10 @@ ggplot(left_skew, aes(x = value)) +
 
 
 ### Right skew  
-The data are clustered around a small value and most of the data (including the median) lie to the left of the mean. 
+A right skew shape occurs when the data are clustered around a small value and most of the data (including the median) fall to the left of the mean. Right skewed data is also often referred to as positive skewed with a long right tail. 
 
 ```{r, warning = FALSE, message=FALSE, echo = FALSE, fig.align="center"}
+set.seed(34)
 right_skew <- as.tibble(rnbinom(1000, mu = 10, size = 1))
 
 right_skew_measures_of_ct <- right_skew %>% 
@@ -137,9 +142,11 @@ ggplot(right_skew, aes(x = value)) +
 
 ### Bimodal distribution  
 
-The distribution shows two peaks of data: there are two modes (two values that occur more frequently than any other) for the data item (variable). This might occur because the data set contains two distinct groups. Consider breaking your dataset into differnt groups to separate the peaks.   
+A Bimodal distribution shows two peaks of data. The peaks shows that there are two modes (two values that occur more frequently than any other) for the value you are plotting. These two peaks typically arise when your data set contains two distinct groups.  
+When you see a bimodal distribution, consider breaking your data set into differnt groups to separate the peaks.   
 
 ```{r, warning = FALSE, message=FALSE, echo = FALSE, fig.align="center"}
+set.seed(12)
 bimodal_dist <- as.tibble(c(rnorm(1500, mean=-1.5), rnorm(1500, mean=1.5))) 
 
 ggplot(bimodal_dist, aes(x = value)) + 
@@ -149,7 +156,7 @@ ggplot(bimodal_dist, aes(x = value)) +
 
 
 ### Comb distribution
-The distribution alternates between high and low peaks. A comb shape can be caused by rounding off. Common examples of rounding that create comb distributions include: rounding temperatures, height, age to the nearest whole number.  
+The Comb distribution alternates between high and low peaks. A comb shape can be caused by rounding numbers. Common examples of rounding that create comb distributions include: rounding temperatures, height, or age to the nearest whole number.  
 
 ```{r, warning = FALSE, message=FALSE, echo = FALSE, fig.align="center"}
 comb_dist <- as.tibble(c(rnorm(5000, sd=.5), rep(c(-1,-0.75,-0.5,-0.25,0,0.25,0.5,0.75), 500))) 
@@ -161,9 +168,10 @@ ggplot(comb_dist, aes(x = value)) +
 
 ### Uniform distribution  
 
-The data is equally distributed: there are no clear peaks in the data. 
+A uniform distribution shows that the data are equally distributed: there are no clear peaks in the data. 
 
 ```{r, warning = FALSE, message=FALSE, echo = FALSE, fig.align="center"}
+set.seed(123)
 uniform_dist <- as.tibble(runif(3000, min = 0, max = 500)) 
 
 ggplot(uniform_dist, aes(x = value)) + 
@@ -179,19 +187,27 @@ ggplot(uniform_dist, aes(x = value)) +
 
 #### Print the data
 By printing the data, we get a feel for what we'll be analyzing. 
-From the table, we see there are the life expectancy, population, and GDP per capita of various countries separated by year.  
+From the printed table, we see teh data set containes the life expectancy, population, and GDP per capita of various countries separated by year.  
 
 
 ```{r, warning = FALSE, message=FALSE}
-gapminder
+gapminder #name of data set from the gapminder package
 ```
   
   
   
-#### What's the most common life expectancy?  
-After getting a brief overview of our data set, now we want to know, what's the most common life expectancy?  
+#### What's the average life expectancy?  
+After getting a brief overview of our data set, now we want to know, what's the the average life expectancy in our data set?  
 
-To answer this question, let's print the distribution of life expectancies in the data set. 
+We can calculate the average life expectancy by using the `summarize` and `mean` function: 
+
+```{r}
+gapminder %>% summarize(mean = mean(lifeExp))
+```
+
+But we know that averages can be susceptible to outliers. So, let's take a look at our underlying data.  
+
+To do this, let's plot the distribution of life expectancies in the gapminder data set. 
 
 ```{r, warning = FALSE, message=FALSE}
 ggplot(gapminder, aes(lifeExp)) + 
@@ -228,12 +244,14 @@ ggplot(gapminder, aes(lifeExp)) +
 ```  
 
 From this plot, we can see the life expectancies center around 60 years of age.  
-But, we also notice the shape of this histogram is bimodal. So, this tells us that we're likely looking at two different groups (or more). 
+
+But, we also notice the shape of this histogram is bimodal. This bimodal shape tells us that we're likely looking at two distinct groups (or more). 
   
   
   
 #### Divide the groups, separate the data  
-Since we suspect we're looking at multiple groups from the bimodal distribution, let's separate the histrograms by one of the variables in our data set, continent.
+
+Since we suspect we're looking at multiple groups from the bimodal distribution, let's separate the histrograms by one of the variables in our data set: continent.
 
 ```{r, warning = FALSE, message=FALSE, include = FALSE}
 #Store laCroix color palette, taken from the LaCroisColoR package
@@ -329,11 +347,11 @@ gapminder %>%
 
 </div>
 
-
+In this case, we see a comb distribution in the histogram with more bins, likely due to rounding of ages to the third decimal.   
 
 ### Changing the colors of your histogram
 
-You can manually hard code each of the variables to the colors you want.  
+Let's say you want to customize your histogram. One way is to manually hard code each of the variables to the colors you want.  
 
 
 ```{r, warning = FALSE, message=FALSE, fig.align="center"}
@@ -350,14 +368,14 @@ ggplot(gapminder, aes(lifeExp, fill = continent)) +
   
 Alternatively, if there is a color palette you want to use, you can create a function to populate colors for your plot.  
 
-Below is an example.
+Below is an example using the LaCroixColoR package.
 
 
 ```{r, warning = FALSE, message=FALSE}
 #store continents in a list
 continents <- c("Africa", "Americas", "Asia", "Europe", "Oceania")
 
-#create a function that will assign the continent names to a color. The function takes three inputs: the list of variables to be colored (e.g. continent names), the type of laCroix palette, and the start of the index. change the index_start to 0 or 1 to get variations of laCroix palette.
+#create a function that will assign the continent names to a color. The function takes three inputs: the list of variables to be colored (e.g. continent names), the type of laCroix flavor palette, and the start of the index. change the index_start to 0 or 1 to get variations of a laCroix flavor palette.
 set_continent_color <- function(continent_names, lacroix_color, index_start) {
   
   #create empty vector to store values
@@ -373,7 +391,7 @@ set_continent_color <- function(continent_names, lacroix_color, index_start) {
 
 ```
 
-#### Plot the histogram.  
+#### Plot the histogram  
 
 Set custom colors using the `set_continent_color` function in the `scale_fill_manual` function.
 
@@ -399,14 +417,14 @@ ggplot(gapminder, aes(lifeExp, fill = continent)) +
 
 </div>
 
-
+*** 
 
 ## Density Plots  
-A density plot is a smoothed version of the histogram.  
+A density plot is a smoothed version of the histogram. It uses kernal smoothing to plot values so it removed the "noise" from a typical histogram visualization.  
 
 ### Plot life expectancies  
 
-The below is code to produce a density plot.  Notice the y-axis is labelled "density", not "count" like the histogram plots. 
+The below is code to produce a density plot.  Notice the y-axis is labeled "density", not "count" like the histogram plots. 
 
 ```{r, warning = FALSE}
 ggplot(gapminder, 
@@ -419,7 +437,8 @@ ggplot(gapminder,
 
 ### Customizing your density plot  
 
-The below code shows you how to choose custom colors for each continent and split each plot. 
+The below code shows you how to choose custom colors and split each continent plot.   
+
 ```{r}
 # Store colors you want for each continent
 density_plot_colors <- c( "Africa" = "#EA7580", 
@@ -438,23 +457,122 @@ ggplot(gapminder,
                           
 ```
 
+  
+***
 
-## Things to look out for   
+## Histogram mistakes to avoid:  
 +  **Minimize clutter and overlap**  
++  **Only plot numerical data**  
    
   
 ***  
 
-## Practial implications for Survey Analysis  
-So, how can knowing all this code help you?  
+## Histograms in Survey Analysis  
+How does knowing how to make histograms help you? 
+
+Let's say you fielded a survey to 5,000 Uber riders. The survey received a 10% response rate, so a total of 500 respondents. 
+
+Is 10% a good response rate? 
+
+Well, let's see if the respondents are *different* from those who didn't respond to the survey. A quick lightweight way to visualize this is by plotting your data set. 
 
 Visualizing your data set should be one of the first steps you complete when conducting exploratory analysis. 
 
+Meaningful data we have on Uber riders in the sample include:  
+
++  days since they first signed up (tenure) and  
++  lifetime trips completed (lt_trips)  
+
+
+```{r}
+set.seed(300)
+
+#Generate a data set with fake sample respondents
+sample <- tibble(
+              respondent_id = 1:5000, 
+              tenure =  rnorm(n = 5000, mean = 900, sd=200), 
+              lt_trips = (c(runif(500, min = 1, max = 50), runif(1000, min = 51, max = 100), runif(3200, min = 101, max = 150), runif(300, min = 151, max = 200)))
+)
+
+#randomly sample 500 respondents from the sample data set and label them as "respondents"
+respondents <- sample_n(sample, 500) %>% 
+              mutate(respondent_type = "respondent")
+
+```
+
+Let's label the nonrespondents in the `sample` data set in a column named `respondent_type`.
+
+```{r}
+nonrespondents <- sample %>% 
+                  anti_join(respondents, by = c("respondent_id" = "respondent_id")) %>%  
+                  mutate(respondent_type = "nonrespondent")
+
+sample_recoded <- respondents %>% 
+                  bind_rows(nonrespondents)
+```
+  
+  
+Let's calculate the average tenure and lifetime trips of the respondents and nonrespondents 
+```{r}
+sample_recoded_measures_of_ct <- sample_recoded %>% 
+  group_by(respondent_type) %>% 
+  summarize(mean_tenure = mean(tenure), 
+            mean_lt_trips = mean(lt_trips) 
+            )
+
+```
+
+  
+Now, let's plot the average tenure and lifetime trips. 
+  
+<div class = "row">
+  
+<div class = "col-md-6">
+
+```{r, warning = FALSE, message=FALSE, fig.align="center"}
+ggplot(sample_recoded, 
+       aes(tenure, 
+           fill = respondent_type, 
+           colour = respondent_type)) +
+        geom_density(alpha = 0.3) + 
+        geom_vline(data = sample_recoded_measures_of_ct, 
+                   aes(xintercept = mean_tenure), 
+                   linetype = "dashed", color = "blue") + 
+        labs(title = "Tenure of Respondents vs. Nonrespondents")
+
+
+```
+
+</div>
+
+<div class = "col-md-6">
+
+```{r, warning = FALSE, message=FALSE, fig.align="center"}
+ggplot(sample_recoded, 
+       aes(lt_trips, 
+           fill = respondent_type, 
+           colour = respondent_type)) +
+        geom_density(alpha = 0.3) + 
+        geom_vline(data = sample_recoded_measures_of_ct, 
+                   aes(xintercept = mean_lt_trips), 
+                   linetype = "dashed", color = "blue") + 
+        labs(title = "Lifetime trips of Respondents vs. Nonrespondents")
+```
+</div>
+
+</div>
+
+From this visualisation, we can see the respondents and nonrespondents are likely similar groups.  
+To further validate this, we can compare the means of the two groups.  Check out Ryan's workbook on Confidence Intervals to learn how to test means across two groups.
+  
+  
 *** 
 
-## But I hate R...  
+## But I'm still uncomfortable with R...  
 
-Ok, we heard you. There's a ramp up to R. If you're still uncomfortable, you can view histogram examples in google sheets [here](https://docs.google.com/spreadsheets/d/1KC1Cx1nHfNrVRSom1QXc42q8S_VSo9KmJA9nrZx3Ils/edit?usp=sharing) and view their walkthrough on the Google support page [here](https://support.google.com/docs/answer/9146867?hl=en)
+Ok, we heard you. There's a ramp up to R. If you're still uncomfortable, you can view a histogram example using the same gapminder data set in google sheets [here](https://docs.google.com/spreadsheets/d/1KC1Cx1nHfNrVRSom1QXc42q8S_VSo9KmJA9nrZx3Ils/edit?usp=sharing) and view a walkthrough on histograms on the Google support page [here](https://support.google.com/docs/answer/9146867?hl=en)
+
+***  
 
 ## Resources
 
@@ -463,6 +581,9 @@ Read more about different visualization types and how to build them from the fol
 +  [Data to Viz](https://www.data-to-viz.com/)  
     *From Data to Viz leads you to the most appropriate graph for your data. It links to the code to build it and lists common caveats you should avoid.*  
 
-* [Smoothed Density Estimates - ggplot2](https://ggplot2.tidyverse.org/reference/geom_density.html)  
-*Documentation on how to use the `geom_density` and `stat_density` plotting functions for ggplot2*
++ [Smoothed Density Estimates - ggplot2](https://ggplot2.tidyverse.org/reference/geom_density.html)  
+*Documentation on how to use the `geom_density` and `stat_density` plotting functions for ggplot2*  
+
++  [LaCroixColoR - LaCroix Color Palettes for R](https://github.com/johannesbjork/LaCroixColoR)  
+    *Choose from 20 different LaCroix flavors to color your plots.*
 
