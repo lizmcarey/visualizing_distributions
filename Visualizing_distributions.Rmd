@@ -5,7 +5,7 @@ knit: (function(input_file, encoding) {
   rmarkdown::render(input_file,
  encoding=encoding,
  output_file=file.path(dirname(input_file), out_dir, 'index.html'))})
-author: "Liz Carey, Meghana Murthy"
+author: "Liz Carey"
 date: "5/14/2019"
 output:  
     html_document: 
@@ -143,7 +143,7 @@ ggplot(right_skew, aes(x = value)) +
 ### Bimodal distribution  
 
 A Bimodal distribution shows two peaks of data. The peaks shows that there are two modes (two values that occur more frequently than any other) for the value you are plotting. These two peaks typically arise when your data set contains two distinct groups.  
-When you see a bimodal distribution, consider breaking your data set into differnt groups to separate the peaks.   
+When you see a bimodal distribution, consider breaking your data set into different groups to separate the peaks.   
 
 ```{r, warning = FALSE, message=FALSE, echo = FALSE, fig.align="center"}
 set.seed(12)
@@ -187,7 +187,7 @@ ggplot(uniform_dist, aes(x = value)) +
 
 #### Print the data
 By printing the data, we get a feel for what we'll be analyzing. 
-From the printed table, we see teh data set containes the life expectancy, population, and GDP per capita of various countries separated by year.  
+From the printed table, we see the data set contains the life expectancy, population, and GDP per capita of various countries separated by year.  
 
 
 ```{r, warning = FALSE, message=FALSE}
@@ -251,7 +251,7 @@ But, we also notice the shape of this histogram is bimodal. This bimodal shape t
   
 #### Divide the groups, separate the data  
 
-Since we suspect we're looking at multiple groups from the bimodal distribution, let's separate the histrograms by one of the variables in our data set: continent.
+Since we suspect we're looking at multiple groups from the bimodal distribution, let's separate the histograms by one of the variables in our data set: continent.
 
 ```{r, warning = FALSE, message=FALSE, include = FALSE}
 #Store laCroix color palette, taken from the LaCroisColoR package
@@ -420,7 +420,7 @@ ggplot(gapminder, aes(lifeExp, fill = continent)) +
 *** 
 
 ## Density Plots  
-A density plot is a smoothed version of the histogram. It uses kernal smoothing to plot values so it removed the "noise" from a typical histogram visualization.  
+A density plot is a smoothed version of the histogram. It uses kernel smoothing to plot values so it removed the "noise" from a typical histogram visualization.  
 
 ### Plot life expectancies  
 
@@ -500,7 +500,7 @@ respondents <- sample_n(sample, 500) %>%
 
 ```
 
-Let's label the nonrespondents in the `sample` data set in a column named `respondent_type`.
+Let's label the non-respondents in the `sample` data set in a column named `respondent_type`.
 
 ```{r}
 nonrespondents <- sample %>% 
@@ -512,7 +512,7 @@ sample_recoded <- respondents %>%
 ```
   
   
-Let's calculate the average tenure and lifetime trips of the respondents and nonrespondents 
+Let's calculate the average tenure and lifetime trips of the respondents and non-respondents 
 ```{r}
 sample_recoded_measures_of_ct <- sample_recoded %>% 
   group_by(respondent_type) %>% 
@@ -562,7 +562,7 @@ ggplot(sample_recoded,
 
 </div>
 
-From this visualisation, we can see the respondents and nonrespondents are likely similar groups.  
+From this visualization, we can see the respondents and non-respondents are likely similar groups.  
 To further validate this, we can compare the means of the two groups.  Check out Ryan's workbook on Confidence Intervals to learn how to test means across two groups.
   
   
@@ -570,7 +570,7 @@ To further validate this, we can compare the means of the two groups.  Check out
 
 ## But I'm still uncomfortable with R...  
 
-Ok, we heard you. There's a ramp up to R. If you're still uncomfortable, you can view a histogram example using the same gapminder data set in google sheets [here](https://docs.google.com/spreadsheets/d/1KC1Cx1nHfNrVRSom1QXc42q8S_VSo9KmJA9nrZx3Ils/edit?usp=sharing) and view a walkthrough on histograms on the Google support page [here](https://support.google.com/docs/answer/9146867?hl=en)
+OK, we heard you. There's a ramp up to R. If you're still uncomfortable, you can view a histogram example using the same gapminder data set in Google sheets [here](https://docs.google.com/spreadsheets/d/1KC1Cx1nHfNrVRSom1QXc42q8S_VSo9KmJA9nrZx3Ils/edit?usp=sharing) and view a walk through on histograms on the Google support page [here](https://support.google.com/docs/answer/9146867?hl=en)
 
 ***  
 
