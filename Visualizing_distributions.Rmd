@@ -12,7 +12,7 @@ output:
       toc: true
       toc_float: true
       theme: paper
-      code_folding: show
+      code_folding: hide
       highlight: textmate
       df_print: paged
     
