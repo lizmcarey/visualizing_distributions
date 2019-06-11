@@ -1,20 +1,8 @@
 ---
-title: "Visualizing Distributions"
-knit: (function(input_file, encoding) {
-  out_dir <- 'docs';
-  rmarkdown::render(input_file,
- encoding=encoding,
- output_file=file.path(dirname(input_file), out_dir, 'index.html'))})
+title: "Visualizing Distributions - Word Doc"
 author: "Liz Carey"
 date: "5/14/2019"
-output:  
-    html_document: 
-      toc: true
-      toc_float: true
-      theme: paper
-      code_folding: hide
-      highlight: textmate
-      df_print: paged
+output: word_document
     
 ---
 
@@ -217,7 +205,7 @@ ggplot(gapminder, aes(lifeExp)) +
 Now, let's plot the histogram with measures of central tendency: median and mean. 
 
 ```{r,warning = FALSE, message=FALSE}
-#create a separate data table calculating the mean and median of the data set
+#create a seperate data tabe calculating the mean and median of the data set
 measures_of_ct <- gapminder %>% summarise(mean = mean(lifeExp), 
                                           median = median(lifeExp))
 
