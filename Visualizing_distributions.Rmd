@@ -20,7 +20,7 @@ output:
 
 ### Set up  
 
-Before we begin, install and load necessary packages to run this notebook. 
+Before we begin, be sure to install and load necessary packages to run this notebook. 
 
 ```{r, include = FALSE}
 # install.packages("tidyverse")
@@ -243,7 +243,7 @@ ggplot(gapminder, aes(lifeExp)) +
 
 ```  
 
-From this plot, we can see the life expectancies center around 60 years of age.  
+From this plot, we can see the mean and median are around 60 years of age.  
 
 But, we also notice the shape of this histogram is bimodal. This bimodal shape tells us that we're likely looking at two distinct groups (or more). 
   
@@ -253,47 +253,7 @@ But, we also notice the shape of this histogram is bimodal. This bimodal shape t
 
 Since we suspect we're looking at multiple groups from the bimodal distribution, let's separate the histograms by one of the variables in our data set: continent.
 
-```{r, warning = FALSE, message=FALSE, include = FALSE}
-#Store laCroix color palette, taken from the LaCroisColoR package
-PassionFruit <- c("#C70E7B", "#FC6882", "#A6E000", "#1BB6AF", "#6C6C9D", "#172869")
-Mango <- c("#FF5300", "#9ED80B", "#43B629", "#1BB6AF", "#8F92A1", "#172869")
-Pure <- c("#AFDFEF", "#54BCD1", "#1BB6AF", "#0099D5", "#007BC3", "#172869")
-Lime <- c("#2CB11B", "#95C65C", "#BDDE9B", "#1BB6AF", "#0076C0", "#172869")
-Lemon <- c("#F7AA14", "#F5D000", "#F7E690", "#1BB6AF", "#088BBE", "#172869")
-Orange <- c("#EF7C12", "#FCA315", "#F4B95A", "#1BB6AF", "#088BBE", "#172869")
-Berry <- c("#B25D91", "#CB87B4", "#EFC7E6", "#1BB6AF", "#088BBE", "#172869")
-CranRaspberry <- c("#D9565C", "#F28A8A", "#EDA9AB", "#1BB6AF", "#088BBE", "#172869")
-Pamplemousse <- c("#EA7580", "#F6A1A5", "#F8CD9C", "#1BB6AF", "#088BBE", "#172869")
-PeachPear <- c("#FF3200", "#E9A17C", "#E9E4A6", "#1BB6AF", "#0076BB", "#172869")
-Coconut <- c("#881C00", "#AF6125", "#F4E3C7", "#1BB6AF", "#0076BB", "#172869")
-Apricot <- c("#D72000", "#EE6100", "#FFAD0A", "#1BB6AF", "#9093A2", "#132157")
-Tangerine <- c("#EF562A", "#EC921D", "#F7B449", "#FFED00", "#1BB6AF", "#9093A2", "#132157")
-KeyLime <- c("#D84D16", "#FFF800", "#8FDA04", "#009F3F", "#132157")
-PommeBaya <- c("#C23A4B", "#FBBB48", "#EFEF46", "#31D64D", "#132157")
-CeriseLimon <- c("#EE4244", "#F8D961", "#B6D944", "#638E6E", "#3C5541", "#132157")
-PinaFraise <- c("#F44B4B", "#F19743", "#F1F1A8", "#92D84F", "#7473A6", "#132157")
-KiwiSandia <- c("#D18F55", "#FF3F38", "#FF8C8D", "#AFDE62", "#3CBC38", "#4F5791", " #132157")
-MelonPomelo <- c("#EE404E", "#F99D53", "#F9E7C2", "#24C852", "#4F5791", "#132157")
-MurePepino <- c("#D64358", "#EAFB88", "#3C8C4D", "#DFCEE0", "#4F5791", "#132157")
 
-#store continents in a list
-continents <- c("Africa", "Americas", "Asia", "Europe", "Oceania")
-
-#create a function that will assign the continent names to a color. The function takes three inputs: the list of variables to be colored (e.g. continent names), the type of laCroix palette, and the start of the index. change the index_start to 0 or 1 to get variations of laCroix palette.
-set_continent_color <- function(continent_names, lacroix_color, index_start) {
-  
-  #create empty vector to store values
-  output <- vector("character", length(continent_names))
-  
-  #loop over the length of the list of continent names, and assign a color to each continent
-  for (i in seq_along(continent_names)) {
-    output[[i]] <- lacroix_color[[index_start + i]]
-  }
-  output 
-  
-}
-
-```
 
 ```{r, warning = FALSE, message=FALSE, fig.align="center"}
 #create a seperate data tabe calculating the mean and median of each continent
@@ -311,7 +271,11 @@ ggplot(gapminder, aes(lifeExp, fill = continent)) +
   geom_vline(data = measures_of_ct_by_continent, 
              aes(xintercept = median, color = "median"), 
              linetype = "dashed") +
-  scale_fill_manual(values = set_continent_color(continents, Pamplemousse, 1)) +
+  scale_fill_manual(values = c("Africa" = "#EA7580", 
+                               "Americas" = "#F6A1A5", 
+                               "Asia" = "#F8CD9C", 
+                               "Europe"= "#1BB6AF", 
+                               "Oceania" = "#088BBE")) +
   facet_wrap(~continent)
 ```
   
@@ -351,76 +315,13 @@ In this case, we see a comb distribution in the histogram with more bins, likely
 
 ### Changing the colors of your histogram
 
-Let's say you want to customize your histogram. One way is to manually hard code each of the variables to the colors you want.  
+Changing the colors of your histogram takes a little familiarity with R programming, click [here](https://lizmcarey.github.io/customizing_plots/) to learn more about customizing plots.
 
-
-```{r, warning = FALSE, message=FALSE, fig.align="center"}
-
-ggplot(gapminder, aes(lifeExp, fill = continent)) +
-  geom_histogram() + 
-  scale_fill_manual(values = c("Africa" = "#EA7580", 
-                               "Americas" = "#F6A1A5", 
-                               "Asia" = "#F8CD9C", 
-                               "Europe"= "#1BB6AF", 
-                               "Oceania" = "#088BBE"))
-
-```
-  
-Alternatively, if there is a color palette you want to use, you can create a function to populate colors for your plot.  
-
-Below is an example using the LaCroixColoR package.
-
-
-```{r, warning = FALSE, message=FALSE}
-#store continents in a list
-continents <- c("Africa", "Americas", "Asia", "Europe", "Oceania")
-
-#create a function that will assign the continent names to a color. The function takes three inputs: the list of variables to be colored (e.g. continent names), the type of laCroix flavor palette, and the start of the index. change the index_start to 0 or 1 to get variations of a laCroix flavor palette.
-set_continent_color <- function(continent_names, lacroix_color, index_start) {
-  
-  #create empty vector to store values
-  output <- vector("character", length(continent_names))
-  
-  #loop over the length of the list of continent names, and assign a color to each continent
-  for (i in seq_along(continent_names)) {
-    output[[i]] <- lacroix_color[[index_start + i]]
-  }
-  output 
-  
-}
-
-```
-
-#### Plot the histogram  
-
-Set custom colors using the `set_continent_color` function in the `scale_fill_manual` function.
-
-<div class = "row">
-  
-<div class = "col-md-6">
-```{r, warning = FALSE, message=FALSE, fig.align="center"}
-
-ggplot(gapminder, aes(lifeExp, fill = continent)) +
-  geom_histogram() + 
-  scale_fill_manual(values = set_continent_color(continents, PeachPear, 1))
-```
-</div>
-
-<div class = "col-md-6">
-```{r, warning = FALSE, message=FALSE, fig.align="center"}
-
-ggplot(gapminder, aes(lifeExp, fill = continent)) +
-  geom_histogram() + 
-  scale_fill_manual(values = set_continent_color(continents, Lemon, 1))
-```  
-</div>
-
-</div>
-
-*** 
+***
 
 ## Density Plots  
-A density plot is a smoothed version of the histogram. It uses kernel smoothing to plot values so it removed the "noise" from a typical histogram visualization.  
+A density plot is a smoothed version of the histogram. It uses kernel smoothing to plot values so it removes the "noise" from a typical histogram visualization.  
+One benefit to density plots is that their shapes aren't subjected to bin widths like histograms.  
 
 ### Plot life expectancies  
 
